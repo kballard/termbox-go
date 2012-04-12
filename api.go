@@ -96,7 +96,9 @@ func Close() {
 	tcsetattr(out.Fd(), &orig_tios)
 
 	out.Close()
-	in.Close()
+	// closing in will block on Darwin if we have an outstanding Read
+	// (which we will always have).
+	/*in.Close()*/
 }
 
 // Synchronizes the internal back buffer with the terminal.
