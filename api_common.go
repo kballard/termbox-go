@@ -129,6 +129,7 @@ const (
 	AttrBold Attribute = 1 << (iota + 4)
 	AttrUnderline
 	AttrReverse
+	AttrBlink
 )
 
 // Input mode. See SetInputMode function.

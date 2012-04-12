@@ -123,7 +123,7 @@ func send_attr(fg, bg Attribute) {
 		if fg&AttrBold != 0 {
 			outbuf.WriteString(funcs[t_bold])
 		}
-		if bg&AttrBold != 0 {
+		if fg&AttrBlink|bg&AttrBlink != 0 {
 			outbuf.WriteString(funcs[t_blink])
 		}
 		if fg&AttrUnderline != 0 {
