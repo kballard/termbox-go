@@ -71,23 +71,39 @@ func write_cursor(x, y int) {
 	outbuf.WriteString("H")
 }
 
-func write_sgr_fg(a Attribute) {
+func write_sgr_fg(a uint) {
 	outbuf.WriteString("\033[3")
-	outbuf.Write(strconv.AppendUint(intbuf, uint64(a-1), 10))
+	if a > 7 {
+		// xterm-256 color
+		outbuf.WriteString("8;5;")
+	}
+	outbuf.Write(strconv.AppendUint(intbuf, uint64(a), 10))
 	outbuf.WriteString("m")
 }
 
-func write_sgr_bg(a Attribute) {
+func write_sgr_bg(a uint) {
 	outbuf.WriteString("\033[4")
-	outbuf.Write(strconv.AppendUint(intbuf, uint64(a-1), 10))
+	if a > 7 {
+		// xterm-256 color
+		outbuf.WriteString("8;5;")
+	}
+	outbuf.Write(strconv.AppendUint(intbuf, uint64(a), 10))
 	outbuf.WriteString("m")
 }
 
-func write_sgr(fg, bg Attribute) {
+func write_sgr(fg, bg uint) {
 	outbuf.WriteString("\033[3")
-	outbuf.Write(strconv.AppendUint(intbuf, uint64(fg-1), 10))
+	if fg > 7 {
+		// xterm-256 color
+		outbuf.WriteString("8;5;")
+	}
+	outbuf.Write(strconv.AppendUint(intbuf, uint64(fg), 10))
 	outbuf.WriteString(";4")
-	outbuf.Write(strconv.AppendUint(intbuf, uint64(bg-1), 10))
+	if bg > 7 {
+		// xterm-256 color
+		outbuf.WriteString("8;5;")
+	}
+	outbuf.Write(strconv.AppendUint(intbuf, uint64(bg), 10))
 	outbuf.WriteString("m")
 }
 
@@ -108,15 +124,27 @@ func get_term_size(fd uintptr) (int, int) {
 func send_attr(fg, bg Attribute) {
 	if fg != lastfg || bg != lastbg {
 		outbuf.WriteString(funcs[t_sgr0])
-		fgcol := fg & 0x0F
-		bgcol := bg & 0x0F
-		if fgcol != ColorDefault {
-			if bgcol != ColorDefault {
+		hasfg := (fg & ColorMask) != 0
+		hasbg := (bg & ColorMask) != 0
+		fgcol := uint(fg & ColorMask)
+		bgcol := uint(bg & ColorMask)
+		if fgcol&ColorXterm256 != 0 {
+			fgcol = uint((fg & XtermColorMask) >> XtermColorShift)
+		} else {
+			fgcol -= uint(ColorBlack) // shift into ANSI
+		}
+		if bgcol&ColorXterm256 != 0 {
+			bgcol = uint((bg & XtermColorMask) >> XtermColorShift)
+		} else {
+			bgcol -= uint(ColorBlack) // shift into ANSI
+		}
+		if hasfg {
+			if hasbg {
 				write_sgr(fgcol, bgcol)
 			} else {
 				write_sgr_fg(fgcol)
 			}
-		} else if bgcol != ColorDefault {
+		} else if hasbg {
 			write_sgr_bg(bgcol)
 		}
 
