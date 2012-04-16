@@ -128,12 +128,12 @@ func send_attr(fg, bg Attribute) {
 		hasbg := (bg & ColorMask) != 0
 		fgcol := uint(fg & ColorMask)
 		bgcol := uint(bg & ColorMask)
-		if fgcol&ColorXterm256 != 0 {
+		if fgcol == ColorXterm256 {
 			fgcol = uint((fg & XtermColorMask) >> XtermColorShift)
 		} else {
 			fgcol -= uint(ColorBlack) // shift into ANSI
 		}
-		if bgcol&ColorXterm256 != 0 {
+		if bgcol == ColorXterm256 {
 			bgcol = uint((bg & XtermColorMask) >> XtermColorShift)
 		} else {
 			bgcol -= uint(ColorBlack) // shift into ANSI
