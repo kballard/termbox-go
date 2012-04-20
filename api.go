@@ -2,7 +2,6 @@
 
 package termbox
 
-import "fmt"
 import "os"
 import "os/signal"
 import "syscall"
@@ -179,13 +178,6 @@ func DrawString(x, y int, fg, bg Attribute, str string) {
 		}
 		back_buffer.cells[y*back_buffer.width+x+offset] = Cell{ch, fg, bg}
 	}
-}
-
-// Draws a formatted string into the internal back buffer at the specified position.
-// The strig does not wrap.
-func DrawStringf(x, y int, fg, bg Attribute, format string, a ...interface{}) {
-	str := fmt.Sprintf(format, a...)
-	DrawString(x, y, fg, bg, str)
 }
 
 // Returns a slice into the termbox's back buffer. You can get its dimensions
