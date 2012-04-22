@@ -27,6 +27,8 @@ const (
 	t_reverse
 	t_enter_keypad
 	t_exit_keypad
+	t_enter_alt_charset_mode
+	t_exit_alt_charset_mode
 )
 
 const (

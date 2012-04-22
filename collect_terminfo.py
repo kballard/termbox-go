@@ -3,7 +3,12 @@
 import sys, os, subprocess
 
 def escaped(s):
-	return repr(s)[1:-1]
+	s = repr(s)
+	if s[0] == 'u':
+		s = s[2:-1]
+	else:
+		s = s[1:-1]
+	return s
 
 def tput(term, name):
 	try:
@@ -63,7 +68,9 @@ funcs = [
 	"T_BLINK",		"blink",
 	"T_REVERSE",            "rev",
 	"T_ENTER_KEYPAD",	"smkx",
-	"T_EXIT_KEYPAD",	"rmkx"
+	"T_EXIT_KEYPAD",	"rmkx",
+	"T_ENTER_ALT_CHARSET_MODE",	"smacs",
+	"T_EXIT_ALT_CHARSET_MODE",	"rmacs"
 ]
 
 def iter_pairs(iterable):
