@@ -8,7 +8,7 @@ type (
 	EventType uint8
 	Modifier  uint8
 	Key       uint16
-	Attribute uint16
+	Attribute uint32
 )
 
 // This type represents a termbox event. 'Mod', 'Key' and 'Ch' fields are valid
@@ -127,12 +127,13 @@ const (
 	ColorXterm256 = 0x0F // indicates an xterm-256 color
 )
 
-const AttrMask Attribute = 0xF0
+const AttrMask Attribute = 0xFFF0
 const (
 	AttrBold Attribute = 1 << (iota + 4)
 	AttrUnderline
 	AttrReverse
 	AttrBlink
+	AttrAltCharset
 )
 
 // XtermColorMask defines the space in an Attribute reserved for xterm-256 colors.
@@ -141,8 +142,8 @@ const (
 // Note: xterm-256 colors are not handled on Windows, and no attempt is made to
 // detect terminal support before using them.
 const (
-	XtermColorMask  Attribute = 0xFF00
-	XtermColorShift           = 8
+	XtermColorMask  Attribute = 0xFF000000
+	XtermColorShift           = 24
 )
 
 // Input mode. See SetInputMode function.

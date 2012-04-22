@@ -162,6 +162,9 @@ func send_attr(fg, bg Attribute) {
 		if fg&AttrReverse|bg&AttrReverse != 0 {
 			outbuf.WriteString(funcs[t_reverse])
 		}
+		if fg&AttrAltCharset|bg&AttrAltCharset != 0 {
+			outbuf.WriteString(funcs[t_enter_alt_charset_mode])
+		}
 
 		lastfg, lastbg = fg, bg
 	}
